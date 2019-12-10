@@ -3,7 +3,7 @@
 # @Time         : 2019/12/8
 # @Author       : jwy
 # @Email        : lygjwy@qq.com
-# @Description  : 爬取马蜂窝指定目的地游记
+# @Description  : 爬取马蜂窝指定目的地游记链接
 
 import os
 import random
@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 import lxml
 
 import ContentAnalyser
+import SeleniumSpider
 
 
 class MafengwoSpider:
@@ -129,39 +130,6 @@ class MafengwoSpider:
             file.write(yjUrl+"\n")
         file.close()
 
-    def yjContentScraper(self):
-        # 根据游记url爬取文本内容
-        name = 1
-        for url in self.yjUrlList:
-            print("yjUrl: "+url)
-            self.headers['User-Agent'] = random.choice(self.uaList)
-            response = self.session.get(url, headers=self.headers)
-
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, "lxml")
-                # need parser
-                self.yjContentUtil(name, self.yjContentParser(soup))
-                name = name + 1
-            else:
-                exit()
-
-            # avoid anti-scrapy
-            time.sleep(random.randint(0, 1))
-
-        # 持久化，保存游记链接到本地
-        self.yjContentUtil()
-
-    def yjContentParser(self, soup):
-        # 解析游记中的文本内容
-        content = ""
-        return content
-
-    def yjContentUtil(self, name, content):
-        # 将游记文本内容保存到本地
-        file = open("./"+str(name)+".txt", 'w')
-        file.write(content)
-        file.close()
-
 
 if __name__ == "__main__":
     # 爬虫第一个参数为目的地Id，第二个参数为游记页数，默认爬取最热游记，数量上限为3k
@@ -169,13 +137,6 @@ if __name__ == "__main__":
 
     # 首先爬取游记链接
     mafengwoSpider.yjUrlScraper()
-
-    # 爬取游记内容
-    # mafengwoSpider.yjContentScraper()
-
-    # 根据爬取的游记内容进行分析
-    # contentAnalyser = ContentAnalyser()
-    # contentAnalyser.routeAnalyse()
 
 
 
