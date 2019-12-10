@@ -14,6 +14,7 @@ import lxml
 
 import ContentAnalyser
 
+
 class MafengwoSpider:
 
     urlPrefix = "http://www.mafengwo.cn/yj/"
@@ -106,7 +107,7 @@ class MafengwoSpider:
                 exit()
 
             # avoid anti-scrapy
-            time.sleep(random.randint(1, 2))
+            # time.sleep(random.randint(1, 2))
 
         # 持久化，保存游记链接到本地
         self.yjUrlUtil()
@@ -114,14 +115,16 @@ class MafengwoSpider:
     def yjUrlParser(self, soup):
         # 解析每一页面中的游记链接
         aList = soup.find_all("a", {'class': "title-link"})
+        print(len(aList))
         for a in aList:
             self.yjUrlList.append(self.yjUrlPrefix+a["href"])
 
     def yjUrlUtil(self):
         # 将游记url去重并保存到本地文件
+        print("Total number of yj before remove repeat: "+str(len(self.yjUrlList)))
         self.yjUrlList = list(set(self.yjUrlList))
-        print("Total number of yj: "+str(len(self.yjUrlList)))
-        file = open("./ygUrls.txt", 'w')
+        print("Total number of yj after remove repeat: "+str(len(self.yjUrlList)))
+        file = open("ygUrls.txt", 'w')
         for yjUrl in self.yjUrlList:
             file.write(yjUrl+"\n")
         file.close()
