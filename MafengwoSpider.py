@@ -3,7 +3,7 @@
 # @Time         : 2019/12/8
 # @Author       : jwy
 # @Email        : lygjwy@qq.com
-# @Description  : 爬取马蜂窝指定目的地游记
+# @Description  : 爬取马蜂窝指定目的地游记链接
 
 import os
 import random
@@ -13,6 +13,8 @@ from bs4 import BeautifulSoup
 import lxml
 
 import ContentAnalyser
+import SeleniumSpider
+
 
 class MafengwoSpider:
 
@@ -106,7 +108,7 @@ class MafengwoSpider:
                 exit()
 
             # avoid anti-scrapy
-            time.sleep(random.randint(1, 2))
+            # time.sleep(random.randint(1, 2))
 
         # 持久化，保存游记链接到本地
         self.yjUrlUtil()
@@ -114,49 +116,18 @@ class MafengwoSpider:
     def yjUrlParser(self, soup):
         # 解析每一页面中的游记链接
         aList = soup.find_all("a", {'class': "title-link"})
+        print(len(aList))
         for a in aList:
             self.yjUrlList.append(self.yjUrlPrefix+a["href"])
 
     def yjUrlUtil(self):
         # 将游记url去重并保存到本地文件
+        print("Total number of yj before remove repeat: "+str(len(self.yjUrlList)))
         self.yjUrlList = list(set(self.yjUrlList))
-        print("Total number of yj: "+str(len(self.yjUrlList)))
-        file = open("./ygUrls.txt", 'w')
+        print("Total number of yj after remove repeat: "+str(len(self.yjUrlList)))
+        file = open("ygUrls.txt", 'w')
         for yjUrl in self.yjUrlList:
             file.write(yjUrl+"\n")
-        file.close()
-
-    def yjContentScraper(self):
-        # 根据游记url爬取文本内容
-        name = 1
-        for url in self.yjUrlList:
-            print("yjUrl: "+url)
-            self.headers['User-Agent'] = random.choice(self.uaList)
-            response = self.session.get(url, headers=self.headers)
-
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, "lxml")
-                # need parser
-                self.yjContentUtil(name, self.yjContentParser(soup))
-                name = name + 1
-            else:
-                exit()
-
-            # avoid anti-scrapy
-            time.sleep(random.randint(0, 1))
-
-        # 持久化，保存游记链接到本地
-        self.yjContentUtil()
-
-    def yjContentParser(self, soup):
-        # 解析游记中的文本内容
-        content = ""
-        return content
-
-    def yjContentUtil(self, name, content):
-        # 将游记文本内容保存到本地
-        file = open("./"+str(name)+".txt", 'w')
-        file.write(content)
         file.close()
 
 
@@ -166,13 +137,6 @@ if __name__ == "__main__":
 
     # 首先爬取游记链接
     mafengwoSpider.yjUrlScraper()
-
-    # 爬取游记内容
-    # mafengwoSpider.yjContentScraper()
-
-    # 根据爬取的游记内容进行分析
-    # contentAnalyser = ContentAnalyser()
-    # contentAnalyser.routeAnalyse()
 
 
 
