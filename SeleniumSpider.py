@@ -27,13 +27,15 @@ class SeleniumSpider:
             time.sleep(5)
             # 滚动到页面最底部
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            time.sleep(3)
+            time.sleep(5)
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            time.sleep(1)
+            # time.sleep(1)
             # get specific <p>
+            time.sleep(5)
             # two kinds paragrph, one paper only have one kind
             ps1 = self.driver.find_elements_by_xpath("//p[@class='_j_note_content _j_seqitem']")
             ps2 = self.driver.find_elements_by_xpath("//p[@class='_j_note_content']")
+            time.sleep(5)
             # 提取内容并保存到本地
             content = ""
             for p in ps1:

@@ -137,34 +137,3 @@ if __name__ == "__main__":
 
     # 首先爬取游记链接
     mafengwoSpider.yjUrlScraper()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
